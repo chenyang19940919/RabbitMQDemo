@@ -1,4 +1,5 @@
 using RabbitMQDemo.API.Helpers.MongoDB;
+using RabbitMQDemo.API.Producer;
 using RabbitMQDemo.API.Services.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<IMongoDBHelper, MongoDBHelper>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IRabitMQProducer, RabitMQProducer>();
 
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBDatabase"));
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQDemo.API.Models;
+using RabbitMQDemo.API.Producer;
 using RabbitMQDemo.API.Services.ProductService;
 
 namespace RabbitMQDemo.API.Controllers
@@ -10,9 +11,14 @@ namespace RabbitMQDemo.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IRabitMQProducer _rabitMQProducer;
 
-        public ProductsController(IProductService productService) =>
+        public ProductsController(IProductService productService, IRabitMQProducer rabitMQProducer)
+        {
             _productService = productService;
+            _rabitMQProducer = rabitMQProducer;
+        }
+
 
         [HttpGet]
         public async Task<List<Product>> Get() =>
@@ -22,8 +28,8 @@ namespace RabbitMQDemo.API.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var product = await _productService.GetAsync(id);
-            
-            if(product == null)
+
+            if (product == null)
             {
                 return NotFound();
             }
@@ -34,7 +40,11 @@ namespace RabbitMQDemo.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Product newProduct)
         {
-            await _productService.CreateAsync(newProduct);
+            var product = await _productService.CreateAsync(newProduct);
+
+            //send the inserted product data to the queue and consumer will listening this data from queue
+            _rabitMQProducer.SendProductMessage(product);
+
             return Ok();
         }
 
@@ -43,7 +53,7 @@ namespace RabbitMQDemo.API.Controllers
         {
             var product = await _productService.GetAsync(id);
 
-            if(product == null)
+            if (product == null)
             {
                 return NotFound();
             }

@@ -1,3 +1,4 @@
 .vs
 bin
 obj
+*.scproj.user

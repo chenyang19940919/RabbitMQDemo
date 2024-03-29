@@ -19,8 +19,12 @@ namespace RabbitMQDemo.API.Services.ProductService
         public async Task<Product> GetAsync(string id) =>
             await _productCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task CreateAsync(Product newProduct) =>
+        public async Task<Product> CreateAsync(Product newProduct)
+        {
             await _productCollection.InsertOneAsync(newProduct);
+            return newProduct;
+        }
+           
 
         public async Task UpdateAsync(string id, Product updateProduct) =>
             await _productCollection.ReplaceOneAsync(x => x.Id == id, updateProduct);

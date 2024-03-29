@@ -1,4 +1,5 @@
-﻿using RabbitMQDemo.API.Models;
+﻿using MongoDB.Driver;
+using RabbitMQDemo.API.Models;
 
 namespace RabbitMQDemo.API.Services.ProductService
 {
@@ -6,7 +7,7 @@ namespace RabbitMQDemo.API.Services.ProductService
     {
         public Task<List<Product>> GetAsync();
         public Task<Product> GetAsync(string id);
-        public Task CreateAsync(Product newProduct);
+        public Task<Product> CreateAsync(Product newProduct);
         public Task UpdateAsync(string id, Product updateProduct);
         public Task DeleteAsync(string id);
     }
